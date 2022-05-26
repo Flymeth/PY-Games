@@ -1,2 +1,2 @@
-# PY-Games
-Jeu python (crée pour jouer en cour)
+# My python games
+> This games are created to be playable on calculator (**Casio** *Graph 90+E*)
