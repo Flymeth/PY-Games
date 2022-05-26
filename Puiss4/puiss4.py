@@ -2,7 +2,7 @@
 *                   *
 *    puissance 4    *
 *                   *
-*     By Johan      *
+*    By Flymeth     *
 *                   *
 *-----------------"""
 from tools import *
