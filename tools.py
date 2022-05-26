@@ -278,7 +278,7 @@ def tools_help():
     "Jtools est un module permettant d'ameliorer l'experience python sur calculatrice.",
     "Cree par Johan et utilisable de tous, vous pourrez grace a lui cree...","de meilleurs programes/jeux sur calculatrice.",
     "Vous pourrez grace a lui:","- creer des menus\n- utiliser sleep()\n- couper auto. la taille d'un text",
-    "- avoir une direction en fonction d'une touche\n- et bien plus!","Plus d'information: voir Johan"]
+    "- avoir une direction en fonction d'une touche\n- et bien plus!","Plus d'information: voir Flymeth (https://flymeth.net)"]
   for txt in  helps:
     clear()
     if dialog(autoSplitTxt(txt)) in cancel and menu(["Rester", "Quitter"], "Quitter ce menu?"): return
