@@ -1,14 +1,5 @@
-# Monopoly game
-
-Wanted to play monopoly on your `CASIO GRAPH` ? That is now possible!
-
-> ## Installation
-> 
-> 1. Create a folder in the main folder of your calculator
-> 2. Paste the 3 files inside this folder (`Game.py`, `tools.py`, `vars.py`)
-> 3. Disconnect your calculator
-> 4. Launch your calculator's python module, open the folder and launch the `Game.py` file.
-> 5. Have fun!
+# MONOPOLY GAME
+> Because this game is really big/editable, I created a special `readme.md` file for it!
 
 > ## Game's datas
 > 
