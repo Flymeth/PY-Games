@@ -5,7 +5,7 @@
 ## Install a game of your device:
 1. Create a folder on your device: *Rename it to what ever you want (the name of the game for exemple)*.
 2. Download the "tools.py" file: requires for all the games (see [here](#JTools) for more information about this file). Then place it to the created folder.
-3. Dowload every files of the game's folder on the repo, then place them to the this same folder.
+3. Dowload every files of the game's folder on the repo, then place them to this same folder.
 4. Play to the game by launching the game file (not the tool file): Have fun!
 ---
 ## JTools
