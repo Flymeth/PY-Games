@@ -1,7 +1,15 @@
 # MONOPOLY GAME
 > Because this game is really big/editable, I created a special `readme.md` file for it!
 
-> ## Game's datas
+> ## Installation
+> 
+> 1. Create a folder in the main folder of your calculator
+> 2. Paste the 3 files inside this folder (`Game.py`, `tools.py`, `vars.py`)
+> 3. Disconnect your calculator
+> 4. Launch your calculator's python module, open the folder and launch the `Game.py` file.
+> 5. Have fun!
+
+> ## Game's datas list
 > 
 > The game's datas is located in the `vars.py` file with the variable `initDatas`. <br>
 > You can modify them by changing the value (*after the "="*)<br>
@@ -92,9 +100,9 @@
 >   > 
 >   > <u>`Default` **createCase()**</u>: *The default function to create a custom case*
 >   > 
->   > - `card_name` **" "**: *The case's name*
->   > - `card_type` **" "**: *The case's type*
->   > - `card_datas` **{ }**: *The case's datas*
+>   > - `name` **" "**: *The case's name*
+>   > - `tpe` **" "**: *The case's type*
+>   > - `datas` **{ }**: *The case's datas*
 >   
 >   > <u>`Property` **createProperty()**</u>: *Use this function to create a property case*
 >   > 
@@ -127,6 +135,11 @@
 >     - `type` **" "**: *The type of the packet*
 >     
 >     - `calcValueBy` **" "**: *The behavior the the property's value calculator*
+>       > <u>*This value can be*</u>:
+>       > - **`count`** - *In function of the number of the cards of the same group*
+>       > - **`dice`** - *In function of the number of the dice*
+>       > - **`None`** - *For the default value calculator behavior*
+>     - `multiplicator` **123**: *If `calcValueBy` is set to "dice", the number the dice's value will be multiplied by*
 > 
 > - #### `players` **[ ]** - **{ }**: *The list of the players' datas*:
 >   
