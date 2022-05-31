@@ -2,17 +2,17 @@ from tools import deepcopy, randItem
 
 """ Cases """
 # Creation
-def createCase(card_name, card_type, card_datas={}):
-    assert type(card_name) == type(card_type) == str
-    if(card_datas): assert type(card_datas) == dict
-    return {"name": card_name, "type": card_type, "data": card_datas}
+def createCase(name, tpe, datas={}):
+    assert type(name) == type(tpe) == str
+    if(datas): assert type(datas) == dict
+    return {"name": name, "type": tpe, "data": datas}
 def createProperty(name, cost, group=None, allowConstructions= True, more_datas= {}):
     d = {"money": cost, "group": group if group else None, "houses": 0, "hotels": 0, "allowConstructions": allowConstructions}
     for k in more_datas.keys(): d[k] = more_datas[k]
     return createCase(name, "property", d)
 def createPacket(packet_type):
     assert packet_type == "community" or packet_type == "luck", "packet_type must be \"community\" or \"luck\""
-    return createCase("Chance" if packet_type == "luck" else "Caisse de Communaut  ", "packet", {"type": packet_type})
+    return createCase("Chance" if packet_type == "luck" else "Caisse de Communaute", "packet", {"type": packet_type})
 # Get
 def findCase(fct):
     for i in range(len(gameDatas["plate"])): 
@@ -73,6 +73,7 @@ def calcCardValue(card, pInd):
     def f(c): return c["data"].get("grouped") == group
     playerHas = len(filterCards(f, pInd))
     if card["data"].get("calcValueBy") == "count": return value * playerHas
+    if card["data"].get("calcValueBy") == "dice" and card["data"].get("multiplicator"): return card["data"]["multiplicator"] * (gameDatas["temp"].get("dice") or 1)
     if len(filterCards(f)) == playerHas: value*= 2
     houses = card["data"]["houses"]
     hotels = card["data"]["hotels"]
@@ -204,7 +205,7 @@ initDatas = {
         createProperty("Avenue de la Republique", 120, "light_blue"),
         createCase("Visite Simple", "nothing"),
         createProperty("Boulevard de La Villette", 140, "pink"),
-        createProperty("Compagnie de l'electricite", 150, "company", False, {"calcValueBy": "dice"}),
+        createProperty("Compagnie de l'electricite", 150, "company", False, {"calcValueBy": "dice", "multiplicator": 15}),
         createProperty("Avenue de Neuilly", 140, "pink"),
         createProperty("Rue de Paradis", 160, "pink"),
         createProperty("Gare de Lyon", 200, "train_station", False, {"calcValueBy": "count"}),
@@ -220,7 +221,7 @@ initDatas = {
         createProperty("Gare du Nord", 200, "train_station", False, {"calcValueBy": "count"}),
         createProperty("Faubourg St-Honore", 260, "yellow"),
         createProperty("Place de la bource", 260, "yellow"),
-        createProperty("Compagnie des eaux", 150, "company", False, {"calcValueBy": "dice"}),
+        createProperty("Compagnie des eaux", 150, "company", False, {"calcValueBy": "dice", "multiplicator": 10}),
         createProperty("Rue la Fayette", 280, "yellow"),
         createCase("Allez en prison", "prison"),
         createProperty("Avenue de Breteuil", 300, "green"),

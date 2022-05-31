@@ -110,7 +110,7 @@ def game(players):
             value = prop["data"]["money"]
             pMoney = calcMoney(pInd)
             if pMoney < value: return dialog(ast("Carte hypotheque. Vous n'avez pas assez d'argent pour la racheter!"))
-            rebuy = menu(["Oui", "Non"], ast("Cette carte a ete hypotheque. Voulez-vous la racheter ?"))
+            rebuy = menu(["Non", "Oui"], ast("Cette carte a ete hypotheque. Voulez-vous la racheter ?"))
             if rebuy:
                 addMoney(pInd, -value)
                 gameDatas["players"][pInd]["cards"].pop(index)
@@ -134,19 +134,18 @@ def game(players):
         choosedGrp = menu(l, ast("Voici vos biens (" + str(len(props)) + "):"))
         if choosedGrp == None: return
         groupName = l[choosedGrp]
-        def f(c):
-            return c["data"]["group"] == groupName.lower() if groupName.lower() != "ungrouped" else None
+        def f(c): return c["data"]["group"] == groupName.lower() if groupName.lower() != "ungrouped" else None
         wells = filterCards(f, pInd)
         if not(len(wells)): return dialog(ast("Une erreur est survenu avec ce type de bien...")) and properties(pInd)
-        choosedCard = menu([ast(well["name"] if well["active"] else "*" + well["name"] + "*", (18 if not(onPC) else 10000)) for well in wells], ast("Voici vos bien appartenant a la categorie des " + groupName + ":"))
+        choosedCard = menu([ast(well["name"] if well["active"] else "*" + well["name"] + "*", (10000 if onPC else 18)) for well in wells], ast("Voici vos bien appartenant a la categorie des " + groupName + ":"))
         if choosedCard == None: return properties(pInd)
         index = gameDatas["players"][pInd]["cards"].index(findCard(f, pInd))
         property_actions(pInd, index)
         return properties(pInd)
     def needMoneys(pInd, needAchieve):
         pData, canPay = gameDatas["players"][pInd], 0
-        for prop in pData["cards"]: canPay+= calcMortgaging(prop, pInd)
-        if canPay <= needAchieve: return dialog(ast("Vous n'avez pas cette somme d'argent...")) and faillite(pInd) and 0
+        for prop in pData["cards"]: canPay+= calcMortgaging(prop, pInd) if prop.get("active") else 0
+        if canPay < needAchieve: return dialog(ast("Vous n'avez pas cette somme d'argent... (et avez hypothequer tous vos biens)")) and faillite(pInd) and 0
         while needAchieve > 0:
             def f(c): return c.get("active")
             validCards = filterCards(f, pInd)
@@ -164,16 +163,16 @@ def game(players):
         del gameDatas["players"][pInd]
         return dialog(ast("Vous venez de faire faillite! Votre pion a ete supprime du plateau..."))
     def case_owned_property(case, ownerIndex, playerIndex):
-        ownerData = gameDatas["players"][ownerIndex]
+        ownerData, playerData = gameDatas["players"][ownerIndex], gameDatas["players"][playerIndex]
         dialog(ast("Vous venez d'entrer dans le domaine de "  + ownerData["name"] + "!"))
         def f(c): return c["name"] == case["name"]
         card = findCard(f, ownerIndex)
+        if card["active"] == False: return dialog(ast("Mais ce dernier a hypotheque ce bien! Vous n'avez rien a paye!"))
         value = calcCardValue(card, ownerIndex)
-        if card["data"].get("calcValueBy") == dice: value*= dice
-        now = addMoney(playerIndex, -value)
-        if now < 0 and not(needMoneys(playerIndex, abs(now))): return
-        addMoney(ownerIndex, value)
-        return dialog(ast("Vous venez de donner " + moneyStr(value) + " a " + ownerData["name"] + "."))
+        now = addMoney(playerIndex, -value) # Enleve l'argent au joueur
+        if now < 0 and not(needMoneys(playerIndex, abs(now))): return dialog(ast(playerData["name"] + " n'a pas pu payer " + moneyStr(value) + " a " + ownerData["name"] + "!"))
+        addMoney(ownerIndex, value) # Ajoute l'argent au proprio
+        return dialog(ast(moneyStr(value) + " viennent d'etre verse a " + ownerData["name"] + "."))
     def case_property(case, pInd):
         def playerGet(p):
             for c in p.get("cards"):
@@ -196,7 +195,7 @@ def game(players):
     def processPacketCard(datas, pInd, isDifferent= False):
         if datas.get("give"):
             addMoney(pInd, datas["give"])
-            dialog(ast(moneyStr(datas["give"]) + " vient d'etre verse sur votre compte!"))
+            dialog(ast(moneyStr(abs(datas["give"])) + " viennent d'etre " + ("verse sur" if datas["give"] > 0 else "retire de") + " votre compte!"))
         if datas.get("data"):
             types = datas["data"]
             if types.get("player"):
@@ -250,7 +249,7 @@ def game(players):
             take = lastCase["data"]["money"]
             now = addMoney(playerIndex, take * -1)
             if now < 0 and not(needMoneys(playerIndex, abs(now))): return
-            dialog(ast(centerTxt(moneyStr(take) +  " vient d'etre retire de votre compte en bancque.")))
+            dialog(ast(centerTxt(moneyStr(take) +  " viennent d'etre retires de votre compte en bancque.")))
     def doAction(pInd):
         action = menu(["Lancer le de", "Biens", "Economies"], ast(centerTxt("Que souhaites-tu faire ?")))
         if action == 0: return
@@ -283,9 +282,9 @@ def game(players):
                 continue
         unSwitch = False
         minDice, maxDice = gameDatas["settings"]["dice"]
-        dice = randint(minDice, maxDice)
-        cases = move(dice, playerIndex)
-        dialog(ast(playerData["name"] + " avance de " + str(dice) + " cases.") + "\n\n" + ast(centerTxt(cases[-1]["name"])))
+        gameDatas["temp"]["dice"] = randint(minDice, maxDice)
+        cases = move(gameDatas["temp"]["dice"], playerIndex)
+        dialog(ast(playerData["name"] + " avance de " + str(gameDatas["temp"]["dice"]) + " cases.") + "\n\n" + ast(centerTxt(cases[-1]["name"])))
         process_moves(cases, playerIndex)
 def restart(): (main if menu(["Non", "Oui"], "Recommencer ?") else clear)()
 def main():
