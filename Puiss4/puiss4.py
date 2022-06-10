@@ -2,7 +2,7 @@
 *                   *
 *    puissance 4    *
 *                   *
-*    By Flymeth     *
+*     By Johan      *
 *                   *
 *-----------------"""
 from tools import *
@@ -97,9 +97,10 @@ def IA(iaInfos,playerInfos,case): # [IA] <START>
     print("IA:",iaPos,"\nPLAYER:",playerPos,"\nBANNED:",bannedPosition)
     def getBetterPosition(els):
       if len(els):
-        for (x,y) in els[0][1]:
-          if not(x in bannedPosition) or (els[0][0]>=winScore and y+1<len(grille) and grille[y+1][x]==""):
-            return x
+        for choices in els:
+          for (x,y) in choices[1]:
+            if not(x in bannedPosition) or (choices[0]>=winScore and y+1<len(grille) and grille[y+1][x]==""):
+              return x
       if len(bannedPosition)>maxX or len(bannedPosition)==0:
         return None
       return int(randfloat(0,maxX,1,bannedPosition))
@@ -142,30 +143,30 @@ def processCases(allCases, same, isIA=False):
       for t in types:
           blankPos=[]
           allPos=[]
-          touchBorder=False
           for i in range(2):
               t[0]*=-1
               t[1]*=-1
               cx,cy=x,y
-              blanked=False
+              blancked = False
+              tempBlanck = []
               while cx>=0 and cy>=0 and cx<=maxX and cy<=maxY:
                   if grille[cy][cx]==same:
-                      if allPos.count((cx,cy))==0:
+                      if allPos.count((cx,cy)) == 0:
                         allPos.append((cx,cy))
                   elif grille[cy][cx]=="":
-                    if blanked:
-                      break
-                    blanked=True
-                    blankPos.append((cx,cy))
-                  else:
-                    break
+                    if blancked: break
+                    blancked = True
+                    tempBlanck.append((cx,cy))
+                  else: break
                   cx+=t[0]
                   cy+=t[1]
               else:
-                touchBorder=True
+                if len(allPos) + len(tempBlanck) + len(blankPos) < winScore: # Si, du fait des bordures, même en posant le pion on ne gagnera pas
+                  continue
+              blankPos+= tempBlanck # append everything
           score=len(allPos)
-          if len(blankPos)>0 and score>=take_at and not(touchBorder and score+len(blankPos)<winScore):
-            if score==winScore-2 and len(blankPos) == winScore-2: # = check if it's a bait
+          if len(blankPos)>0 and score>=take_at:
+            if score==winScore-2 and len(blankPos) >= winScore-2: # = check if it's a bait
               baits.append(blankPos[0])
             addEl(score,blankPos)
   return (outVal, baits)

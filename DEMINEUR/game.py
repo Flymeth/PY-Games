@@ -41,7 +41,7 @@ def gridTxt(grid, px, py, discovered=[], lineSep="\n", charSep="", height= 6, wi
     interY = round(height / 2)
     mnY = 0 if py < interY else py - interY if interY <= py < len(g) - interY else len(g) - height
     if mnY < 0: mnY = 0
-    mxY = mnY + height
+    mxY = mnY + (height if height < len(g) else len(g))
     # X
     interX = round(width / 2)
     mnX = 0 if px < interX else px - interX if interX <= px < len(g[0]) - interX else len(g[0]) - width
